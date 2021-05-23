@@ -21,7 +21,7 @@ The name of the variable should be `fastfood`
 Display the types of variables in the dataset using `skimr` package
 
 ```{r}
-library(tidyverse)
+#library(tidyverse)
 fastfood<-read.csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2018/2018-09-04/fastfood_calories.csv")
 
 library(skimr)
@@ -31,9 +31,8 @@ skim(fastfood)
 **4** Show the number of observations for each restaurant.
 
 ```{r}
-fastfood%>%
-  group_by(restaurant)%>%
-  summarise(count = n())
+library(dplyr)
+fastfood%>%group_by(restaurant)%>%summarise(count = n())
 ```
 
 
@@ -50,11 +49,11 @@ fastfood%>%
 **6** Add a variable to the dataset, which calculates the average calories per type of restaurant and call it `average_calories` 
 
 ```{r}
-average_calories<-fastfood%>%
-  group_by(restaurant)%>%
+fastfood%>%group_by(restaurant)%>%
   mutate(average_calories = mean(calories))%>%
   select(restaurant,average_calories)%>%
   arrange(restaurant,desc(restaurant))%>%
+  distinct(average_calories,.keep_all = TRUE)%>%
   ungroup()
 ```
 
@@ -62,6 +61,7 @@ average_calories<-fastfood%>%
 **7** Display the data vis of total fat per each type of restaurant. Write a narration (2-3 sentences) why you believe this type of data viz presents such information best. **
 
 ```{r}
+library(ggplot2)
 fastfood%>%ggplot(
   aes(
     x=restaurant,
@@ -70,7 +70,7 @@ fastfood%>%ggplot(
 )+geom_point()
 ```
 
-I believe this type of data viz present the total fat per each of restaurant in a clear and precise way. We can see each of its variations according to the items offered by each restaurant.
+**I believe this type of data viz presents the total fat per restaurant in a clear and precise way. We can see each of its levels' variations according to each type of restaurant. Furthermore it shows us where the levels of total fat are more concentrated.**
 
 **8** Display the count of observations per each type of restaurant
 
@@ -84,10 +84,11 @@ geom_bar()
 **9** Add a variable to the dataset, which calculates the maximum total fat per type of restaurant and call it `max_total_fat` 
 
 ```{r}
-max_total_fat<-fastfood%>%group_by(restaurant)%>%
+fastfood%>%group_by(restaurant)%>%
   mutate(max_total_fat = max(total_fat))%>%
   select(restaurant,max_total_fat)%>%
   arrange(restaurant,desc(restaurant))%>%
+  distinct(max_total_fat,.keep_all = TRUE)%>%
   ungroup()
 ```
 
@@ -95,9 +96,10 @@ max_total_fat<-fastfood%>%group_by(restaurant)%>%
 **10** Use observations for Mcdonalds to plot sugar variable against protein with `geom_point()` 
 
 ```{r}
-fastfood%>%filter(restaurant=="Mcdonalds")%>%
-  ggplot(
-  )+geom_point( mapping = aes(x=sugar, y=protein))
-)
+fastfood %>%
+  filter(restaurant=="Mcdonalds") %>% 
+  ggplot(aes(x=sugar, y=protein))+
+  geom_point() +
+  theme_minimal()
 ```
 
