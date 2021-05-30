@@ -1,6 +1,6 @@
 ---
 title: "Assessment1.3"
-author: "Aura Zuluaga"
+author: "Aura Zuluaga s4630375"
 date: "30/05/2021"
 output: html_document
 ---
